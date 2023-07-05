@@ -25,7 +25,7 @@ def article_detail(request, id):
 
     return render(request, 'article/detail.html', context)
 
-
+@login_required(login_url='/user/login/')
 def article_create(request):
     # print(request.method)
     if request.method == 'POST':
@@ -33,7 +33,7 @@ def article_create(request):
         print((article_post_form.is_valid()))
         if article_post_form.is_valid():
             new_article = article_post_form.save(commit=False)
-            new_article.author = User.objects.get(id=1)
+            new_article.author = User.objects.get(id=request.user.id)
             new_article.save()
             return redirect('article:article_list')
         else:
@@ -45,19 +45,19 @@ def article_create(request):
         context = {'article_post_form': article_post_form}
         return render(request, 'article/create.html', context)
 
-
+@login_required(login_url='/user/login/')
 def article_safe_delete(request, id):
     if request.method == 'POST':
 
-        article = Article.objects.get(id=id)
+        article = Article.objects.get(id=request.user.id)
         article.delete()
         return redirect('article:article_list')
     else:
         return HttpResponse('仅允许POST请求！')
 
-
+@login_required(login_url='/user/login/')
 def article_update(request, id):
-    article = Article.objects.get(id=id)
+    article = Article.objects.get(id=request.user.id)
     if request.method == 'POST':
         article_post_form = ArticleForm(data=request.POST)
         if article_post_form.is_valid():

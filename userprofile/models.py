@@ -7,7 +7,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    phone = PhoneNumberField(unique=True, null=True, blank=True, verbose_name="电话号码")
+    phone = models.CharField(max_length=20, blank=True,default='')
     avatar = models.ImageField(upload_to='avatar/%Y%m%d/', blank=True)
     bio = models.TextField(max_length=200, blank=True)
 
@@ -18,12 +18,12 @@ class Profile(models.Model):
         return 'user {}'.format(self.user.username)
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+# @receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
+#
+#
+# @receiver(post_save, sender=User)
+# def save_user_profile(sender, instance, **kwargs):
+#     instance.profile.save()

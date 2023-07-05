@@ -14,10 +14,9 @@ def user_login(request):
         user_login_form = UserLoginForm(data=request.POST)
         if user_login_form.is_valid():
             data = user_login_form
-            print(data['username'])
-            print(data['password'])
-            print(request.POST.get('username'))
+
             user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
+            # print(user)
             if user:
                 login(request, user)
                 return redirect('article:article_list')
@@ -59,7 +58,7 @@ def user_register(request):
         return HttpResponse('请使用GET或POST请求数据！')
 
 
-@login_required(login_url='/userprofile/login/')
+@login_required(login_url='/user/login/')
 def user_delete(request, id):
     if request.method == 'POST':
         user = User.objects.get(id=id)
@@ -73,27 +72,26 @@ def user_delete(request, id):
         return HttpResponse('仅接受POST请求！')
 
 
-@login_required(login_url='/userprofile/login/')
+@login_required(login_url='/user/login/')
 def profile_edit(request, id):
     user = User.objects.get(id=id)
-    profile = Profile.objects.get(user_id=id)
+    if Profile.objects.filter(user_id=id).exists():
+        profile = Profile.objects.get(user_id=id)
+    else:
+        profile = Profile.objects.create(user=user)
     if request.method == 'POST':
-        print('post1')
         if request.user != user:
             return HttpResponse('当前无修改权限')
-        profile_form = ProfileForm(data=request.POST)
+        profile_form = ProfileForm(data=request.POST, files=request.FILES)
         if profile_form.is_valid():
-            print('valid')
             profile_cd = profile_form.cleaned_data
             profile.phone = profile_cd['phone']
             profile.bio = profile_cd['bio']
+            if 'avatar' in request.FILES:
+                profile.avatar = profile_cd['avatar']
             profile.save()
-            print(id)
             return redirect('user:edit', id=id)
         else:
-            profile_cd = profile_form.cleaned_data
-            print(profile_cd)
-            print(profile_cd['phone'])
             return HttpResponse('注册表单有误，请重新输入！')
     elif request.method == 'GET':
         profile_form = ProfileForm()

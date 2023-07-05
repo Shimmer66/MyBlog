@@ -118,8 +118,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static/'),
 )
+
+MEDIA_URL = '/media/' #浏览器中访问媒体文件的路径
+MEDIA_ROOT=os.path.join(BASE_DIR,'media/')#媒体文件在服务器上的实际存储位置
 
 # SMTP服务器，改为你的邮箱的smtp!
 EMAIL_HOST = 'smtp.qq.com'
