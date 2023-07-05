@@ -4,12 +4,16 @@ from .models import Article
 from .forms import ArticleForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 import markdown
 
 
 # Create your views here.
 def article_list(request):
-    articles = Article.objects.all()
+    article_list = Article.objects.all()
+    paginator = Paginator(article_list, 6)
+    page = request.GET.get('page')
+    articles = paginator.get_page((page))
     context = {'articles': articles}
     return render(request, 'article/list.html', context)
 
@@ -24,6 +28,7 @@ def article_detail(request, id):
     context = {'article': article}
 
     return render(request, 'article/detail.html', context)
+
 
 @login_required(login_url='/user/login/')
 def article_create(request):
@@ -45,6 +50,7 @@ def article_create(request):
         context = {'article_post_form': article_post_form}
         return render(request, 'article/create.html', context)
 
+
 @login_required(login_url='/user/login/')
 def article_safe_delete(request, id):
     if request.method == 'POST':
@@ -54,6 +60,7 @@ def article_safe_delete(request, id):
         return redirect('article:article_list')
     else:
         return HttpResponse('仅允许POST请求！')
+
 
 @login_required(login_url='/user/login/')
 def article_update(request, id):

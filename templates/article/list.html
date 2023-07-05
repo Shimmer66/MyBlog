@@ -1,11 +1,9 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-
 <!-- 写入 base.html 中定义的 title -->
 {% block title %}
-    首页
+首页
 {% endblock title %}
-
 <!-- 写入 base.html 中定义的 content -->
 {% block content %}
 
@@ -16,7 +14,7 @@
         {% for article in articles %}
         <!-- 文章内容 -->
         <div class="col-4 mb-4">
-        <!-- 卡片容器 -->
+            <!-- 卡片容器 -->
             <div class="card h-100">
                 <!-- 标题 -->
                 <h4 class="card-header">{{ article.title }}</h4>
@@ -33,5 +31,49 @@
         {% endfor %}
 
     </div>
+    <!-- Pagination -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="pagination row justify-content-center">
+                    <span class="step-links">
+                        <!-- If not the first page, show the previous page button -->
+                        {% if articles.has_previous %}
+                            <a href="?page={{ articles.previous_page_number }}" class="btn btn-secondary">
+                                &laquo;
+                            </a>
+                        {% else %}
+                        <!-- If no previous page -->
+                            <a href="#" class="btn btn-secondary disabled">
+                                &laquo;
+                            </a>
+                        {% endif %}
+
+                        <!-- Current page -->
+                        <span class="current btn btn-danger btn-lg mx-2">
+                            {{ articles.number }}
+                        </span>
+
+                        <!-- If not the last page, show the next page button -->
+                        {% if articles.has_next %}
+                            <a href="?page={{ articles.next_page_number }}" class="btn btn-secondary">
+                                &raquo;
+                            </a>
+                        {% else %}
+                        <!-- If no next page -->
+                            <a href="#" class="btn btn-secondary disabled">
+                                &raquo;
+                            </a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
 </div>
 {% endblock content %}
