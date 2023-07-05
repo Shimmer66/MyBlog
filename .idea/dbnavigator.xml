@@ -13,7 +13,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="667b39ce-a2fd-43de-996c-244b2ff42afb">
-      <console name="Connection" type="STANDARD" schema="main" session="Main"><![CDATA[select * from auth_user]]></console>
+      <console name="Connection" type="STANDARD" schema="main" session="Main"><![CDATA[select * from user_profile]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -24,6 +24,7 @@
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="667b39ce-a2fd-43de-996c-244b2ff42afb" dataset="main.auth_user" active-filter-id="" />
+    <filter-actions connection-id="667b39ce-a2fd-43de-996c-244b2ff42afb" dataset="main.user_profile" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />

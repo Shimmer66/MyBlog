@@ -78,20 +78,26 @@ def profile_edit(request, id):
     user = User.objects.get(id=id)
     profile = Profile.objects.get(user_id=id)
     if request.method == 'POST':
-        if request.user!=user:
+        print('post1')
+        if request.user != user:
             return HttpResponse('当前无修改权限')
-        profile_form=ProfileForm(data=request.POST)
+        profile_form = ProfileForm(data=request.POST)
         if profile_form.is_valid():
-            profile_cd=profile_form.cleaned_data
-            profile.phone=profile_cd['phone']
-            profile.bio=profile_cd['bio']
+            print('valid')
+            profile_cd = profile_form.cleaned_data
+            profile.phone = profile_cd['phone']
+            profile.bio = profile_cd['bio']
             profile.save()
-            return redirect('userprofile:edit',id=id)
+            print(id)
+            return redirect('user:edit', id=id)
         else:
+            profile_cd = profile_form.cleaned_data
+            print(profile_cd)
+            print(profile_cd['phone'])
             return HttpResponse('注册表单有误，请重新输入！')
-    elif request.method=='GET':
-        profile_form=ProfileForm()
-        context={'profile_form':profile_form,'profile':profile,'user':user}
-        return render(request,'userprofile/edit.html',context)
+    elif request.method == 'GET':
+        profile_form = ProfileForm()
+        context = {'profile_form': profile_form, 'profile': profile, 'user': user}
+        return render(request, 'userprofile/edit.html', context)
     else:
         return HttpResponse('请使用POST或GET请求数据')
