@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from .models import Article
@@ -10,22 +11,41 @@ import markdown
 
 # Create your views here.
 def article_list(request):
-    article_list = Article.objects.all()
+    search = request.GET.get('search')
+    order = request.GET.get('order')
+    if search:
+        if order == 'total_views':
+            article_list = Article.objects.filter(Q(content__icontains=search) | Q(title__icontains=search)).order_by(
+                '-total_views')
+        else:
+            article_list = Article.objects.filter(Q(content__icontains=search) | Q(title__icontains=search)).order_by(
+                '-created_date')
+    else:
+        if order == 'total_views':
+            article_list = Article.objects.all().order_by('-total_views')
+            order = 'total_views'
+        else:
+            article_list = Article.objects.all()
+            order = 'normal'
     paginator = Paginator(article_list, 6)
     page = request.GET.get('page')
     articles = paginator.get_page((page))
-    context = {'articles': articles}
+    context = {'articles': articles, 'order': order, 'search': search}
     return render(request, 'article/list.html', context)
 
 
 def article_detail(request, id):
     article = Article.objects.get(id=id)
-    article.content = markdown.markdown(article.content,
-                                        extensions=[
-                                            'markdown.extensions.extra',
-                                            'markdown.extensions.codehilite',
-                                        ])
-    context = {'article': article}
+    article.total_views += 1
+    article.save(update_fields=['total_views'])
+    md = markdown.Markdown(
+        extensions=[
+            'markdown.extensions.extra',
+            'markdown.extensions.codehilite',
+            'markdown.extensions.toc',
+        ])
+    article.content = md.convert(article.content)
+    context = {'article': article, 'toc': md.toc}
 
     return render(request, 'article/detail.html', context)
 
@@ -81,6 +101,7 @@ def article_update(request, id):
 
 # def test(request):
 #     articles = Article.objects.all()
+
 #     li = [1, 2, 3, 4, 5, 6, 47, 8, ]
 #     context = {'a': li}
 #     return render(request, 'article/test.html', context)

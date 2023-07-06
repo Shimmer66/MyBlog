@@ -12,24 +12,37 @@
 <!-- 文章详情 -->
 <div class="container">
     <div class="row">
-        <!-- 标题及作者 -->
-        <h1 class="col-12 mt-4 mb-4">{{ article.title }}</h1>
-        <div class="col-12 alert alert-success">作者：{{ article.author }}
-            <a href="#" onclick="confirm_safe_delete()">删除文章</a>
-            <!-- 显示浏览量 -->
-            <span>
+        <div class="col-9">
+            <!-- 标题及作者 -->
+            <h1 class="col-12 mt-4 mb-4">{{ article.title }}</h1>
+            <div class="col-12 alert alert-success">作者：{{ article.author }}
+                {% if user == article.author %}
+                <br>
+                <a href="#" onclick="confirm_safe_delete()">删除文章</a>
+                <a href="{% url 'article:article_update' article.id %}"> 编辑文章 </a>
+                {% endif %}
+                <!-- 显示浏览量 -->
+                <span>
         <small class="col align-self-end" style="color: gray;">
             浏览: {{ article.total_views }}
         </small>
-    </span>
-            <form style="display:none;"
-                  id="safe_delete"
-                  action="{% url 'article:article_safe_delete' article.id  %}"
-                  method='POST'>
-                {% csrf_token %}
-                <button type="submit"> 发送</button>
-            </form>
+            </span>
+                <form style="display:none;"
+                      id="safe_delete"
+                      action="{% url 'article:article_safe_delete' article.id  %}"
+                      method='POST'>
+                    {% csrf_token %}
+                    <button type="submit"> 发送</button>
+                </form>
+            </div>
+        </div>
 
+        <div class="col-3 mt-4">
+            <h4><strong>目录</strong></h4>
+            <hr>
+            <div>
+                {{ toc|safe }}
+            </div>
         </div>
         <!-- 文章正文 -->
         <div class="col-12">
@@ -53,7 +66,6 @@
             },
         })
     }
-
 
 
 

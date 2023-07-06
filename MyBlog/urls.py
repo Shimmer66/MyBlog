@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('article/', include('article.urls', namespace='article')),
     path('user/', include('userprofile.urls', namespace='user')),
+    path('comment/', include('comment.urls', namespace='comment')),
     path('password-reset/', include('password_reset.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

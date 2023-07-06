@@ -9,6 +9,49 @@
 
 <!-- 定义放置文章标题的div容器 -->
 <div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb d-flex">
+            <li class="breadcrumb-item {% if order != 'total_views' %}active{% endif %}">
+                {% if order != 'total_views' %}
+                <a style="color: red" href="{% url 'article:article_list' %}?search={{ search }}"> 最新 </a>
+                {% else %}
+                <a href="{% url 'article:article_list' %}?search={{ search }}">
+                    最新
+                </a>
+                {% endif %}
+            </li>
+            <li class="breadcrumb-item {% if order == 'total_views' %}active{% endif %}">
+                {% if order == 'total_views' %}
+                <a style="color: red" href="{% url 'article:article_list' %}?order=total_views&search={{ search }}"> 最热 </a>
+                {% else %}
+                <a href="{% url 'article:article_list' %}?order=total_views&search={{ search }}">
+                    最热
+                </a>
+                {% endif %}
+            </li>
+        </ol>
+        <form class="ml-auto" action="{% url 'article:article_list' %}" method="get">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="搜索" name="search" required>
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">搜索</button>
+                </div>
+            </div>
+        </form>
+            <!-- 新增，搜索提示语 -->
+    {% if search %}
+        {% if articles %}
+            <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
+            <hr>
+        {% else %}
+            <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
+            <hr>
+        {% endif %}
+    {% endif %}
+    </nav>
+
+
+
     <div class="row mt-2">
 
         {% for article in articles %}
@@ -39,7 +82,7 @@
                     <span class="step-links">
                         <!-- If not the first page, show the previous page button -->
                         {% if articles.has_previous %}
-                            <a href="?page={{ articles.previous_page_number }}" class="btn btn-secondary">
+                            <a href="?page={{ articles.previous_page_number }}&order={{ order }}&search={{ search }}" class="btn btn-secondary">
                                 &laquo;
                             </a>
                         {% else %}
@@ -56,7 +99,7 @@
 
                         <!-- If not the last page, show the next page button -->
                         {% if articles.has_next %}
-                            <a href="?page={{ articles.next_page_number }}" class="btn btn-secondary">
+                            <a href="?page={{ articles.next_page_number }}&order={{ order }}&search={{ search }}" class="btn btn-secondary">
                                 &raquo;
                             </a>
                         {% else %}
@@ -71,9 +114,26 @@
         </div>
     </div>
 </div>
+<script>
+$(document).ready(function() {
+    $('.breadcrumb-item').click(function() {
+        $('.breadcrumb-item').removeClass('active');
+        $(this).addClass('active');
+    });
+});
 
-</div>
 
 
-</div>
+
+
+
+
+
+
+
+
+
+</script>
+
+
 {% endblock content %}
