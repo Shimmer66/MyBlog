@@ -22,7 +22,8 @@
             </li>
             <li class="breadcrumb-item {% if order == 'total_views' %}active{% endif %}">
                 {% if order == 'total_views' %}
-                <a style="color: red" href="{% url 'article:article_list' %}?order=total_views&search={{ search }}"> 最热 </a>
+                <a style="color: red" href="{% url 'article:article_list' %}?order=total_views&search={{ search }}">
+                    最热 </a>
                 {% else %}
                 <a href="{% url 'article:article_list' %}?order=total_views&search={{ search }}">
                     最热
@@ -38,41 +39,70 @@
                 </div>
             </div>
         </form>
-            <!-- 新增，搜索提示语 -->
-    {% if search %}
+        <!-- 新增，搜索提示语 -->
+        {% if search %}
         {% if articles %}
-            <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
-            <hr>
+        <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
+        <hr>
         {% else %}
-            <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
-            <hr>
+        <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
+        <hr>
         {% endif %}
-    {% endif %}
+        {% endif %}
     </nav>
-
 
 
     <div class="row mt-2">
 
+
         {% for article in articles %}
         <!-- 文章内容 -->
-        <div class="col-4 mb-4">
-            <!-- 卡片容器 -->
-            <div class="card h-100">
-                <!-- 标题 -->
-                <h4 class="card-header">{{ article.title }}</h4>
-                <!-- 摘要 -->
-                <div class="card-body">
-                    <p class="card-text">{{ article.content|slice:'100' }}...</p>
-                </div>
-                <!-- 注脚 -->
-                <div class="card-footer">
-                    <a href="{% url 'article:article_detail' article.id %}" class="btn btn-primary">阅读本文</a>
-                </div>
+        <div class="col-12">
+            <!-- 栏目 -->
+            {% if article.column %}
+            <button type="button"
+                    class="btn btn-sm mb-2
+                        {% if article.column.title == 'Django' %}
+                            btn-success
+                        {% elif article.column.title == 'Java' %}
+                            btn-danger
+                        {% elif article.column.title == 'HTML' %}
+                            btn-warning
+                        {% endif %}">
+                {{ article.column }}
+            </button>
+            {% endif %}
+            <!-- 标题 -->
+            <h4>
+                <b>
+                    <a href="{% url 'article:article_detail' article.id %}"
+                       style="color: black;">
+                        {{ article.title }}
+                    </a>
+                </b>
+            </h4>
+            <!-- 摘要 -->
+            <div>
+                <p style="color: gray;">
+                    {{ article.content|slice:'100' }}...
+                </p>
             </div>
+            <!-- 注脚 -->
+            <p>
+                <!-- 附加信息 -->
+                <span style="color: green;">
+                    {{ article.total_views }} 浏览&nbsp;&nbsp;&nbsp;
+                </span>
+                <span style="color: blue;">
+                    {{ article.created_date|date:'Y-m-d' }} 发布&nbsp;&nbsp;&nbsp;
+                </span>
+                <span style="color: darkred;">
+                    {{ article.updated_date|date:'Y-m-d' }} 更新
+                </span>
+            </p>
+            <hr>
         </div>
         {% endfor %}
-
     </div>
     <!-- Pagination -->
     <div class="container mt-4">
@@ -82,7 +112,8 @@
                     <span class="step-links">
                         <!-- If not the first page, show the previous page button -->
                         {% if articles.has_previous %}
-                            <a href="?page={{ articles.previous_page_number }}&order={{ order }}&search={{ search }}" class="btn btn-secondary">
+                            <a href="?page={{ articles.previous_page_number }}&order={{ order }}{% if search %}&search={{ search }}{% endif %}"
+                               class="btn btn-secondary">
                                 &laquo;
                             </a>
                         {% else %}
@@ -99,7 +130,8 @@
 
                         <!-- If not the last page, show the next page button -->
                         {% if articles.has_next %}
-                            <a href="?page={{ articles.next_page_number }}&order={{ order }}&search={{ search }}" class="btn btn-secondary">
+                            <a href="?page={{ articles.next_page_number }}&order={{ order }}{% if search %}&search={{ search }}{% endif %}"
+                               class="btn btn-secondary">
                                 &raquo;
                             </a>
                         {% else %}
@@ -121,6 +153,10 @@ $(document).ready(function() {
         $(this).addClass('active');
     });
 });
+
+
+
+
 
 
 
