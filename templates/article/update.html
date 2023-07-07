@@ -1,11 +1,14 @@
-{% extends "base.html" %} {% load staticfiles %}
-{% block title %} 更新文章 {% endblock title %}
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}
+更新文章
+{% endblock title %}
 {% block content %}
 <div class="container">
     <div class="row">
         <div class="col-12">
             <br>
-            <form method="post" action=".">
+            <form method="post" action="{% url 'article:article_update' article.id %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="title">文章标题</label>
@@ -15,27 +18,33 @@
                 <!--文章栏目-->
                 <div class="form-group">
                     <label for="column">栏目</label>
-                    <select class="form-control" id="column" name="column">
+                    <select class="form-control"
+                            id="column"
+                            name="column">
                         <option value="none">请选择栏目..</option>
                         {% for column in columns %}
                         <option value="{{ column.id }}"
-                                {% if column.id== article.column.id %}
-                                selected
-                                {% endif %}
-                        >
+
+                                selected='selected'>
+
                             {{ column }}
                         </option>
                         {% endfor %}
                     </select>
-
-
-                    <div class="form-group">
-                        <label for="body">文章正文</label>
-                        <!-- 文本域不需要 value 属性，直接在标签体中嵌入数据即可 -->
-                        <textarea type="text" class="form-control" id="body" name="content"
-                                  rows="12">{{ article.content }}</textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">完成</button>
+                </div>
+                <!-- 文章标题图 -->
+                <div class="form-group">
+                    <label for="title_image">标题图</label>
+                    <input type="file" class="form-control-file" name="title_image" id="title_image">
+                </div>
+                <!-- 文章正文 -->
+                <div class="form-group">
+                    <label for="body">文章正文</label>
+                    <!-- 文本域不需要 value 属性，直接在标签体中嵌入数据即可 -->
+                    <textarea type="text" class="form-control" id="body" name="content"
+                              rows="12">{{ article.content }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">完成</button>
             </form>
         </div>
     </div>

@@ -26,7 +26,7 @@ class Article(models.Model):
         on_delete=models.CASCADE,
         related_name='article'
     )
-    id = models.BigAutoField(primary_key=True)
+
     author = models.ForeignKey(User, on_delete=models.CASCADE)  # 作者，与 User 模型关联
     title = models.CharField(max_length=15)
     created_date = models.DateTimeField(auto_now_add=True)  # 创建日期，自动添加当前日期时间
@@ -50,11 +50,11 @@ class Article(models.Model):
 
     def save(self, *args, **kwargs):
         article = super(Article, self).save(*args, **kwargs)
-        if self.avatar and not kwargs.get('update_fields'):
+        if self.title_image and not kwargs.get('update_fields'):
             image = Image.open((self.title_image))
             (x, y) = image.size
             new_x = 400
             new_y = int(new_x * (y / x))
             resized_image = image.resize((new_x, new_y), Image.ANTIALIAS)
-            resized_image.save(self.avatar.path)
+            resized_image.save(self.title_image.path)
         return article

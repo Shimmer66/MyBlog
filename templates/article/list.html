@@ -56,6 +56,15 @@
 
 
         {% for article in articles %}
+        {% if article.title_image %}
+        <div class="col-3">
+            <img src="{{ article.title_image.url }}"
+                 alt="avatar"
+                 style="max-width:100%; border-radius: 20px"
+            >
+        </div>
+        {% endif %}
+
         <!-- 文章内容 -->
         <div class="col-12">
             <!-- 栏目 -->
@@ -153,6 +162,7 @@ $(document).ready(function() {
         $(this).addClass('active');
     });
 });
+
 
 
 
