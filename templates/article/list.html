@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+<!-- 写入 base.html 中定义的 title -->
+{% block title %}
+首页
+{% endblock title %}
+<!-- 写入 base.html 中定义的 content -->
+{% block content %}
+<body style="background-color: #eee;">
+<!-- 定义放置文章标题的div容器 -->
+<div class="container">
+    <nav aria-label="breadcrumb" style="padding-top: 70px">
+        <ol class="breadcrumb d-flex">
+            <li class="breadcrumb-item {% if order != 'total_views' %}active{% endif %}">
+                {% if order != 'total_views' %}
+                <a style="color: red" href="{% url 'article:article_list' %}?search={{ search|default:''  }}"> 最新 </a>
+                {% else %}
+                <a href="{% url 'article:article_list' %}?search={{search|default:''  }}">
+                    最新
+                </a>
+                {% endif %}
+            </li>
+            <li class="breadcrumb-item {% if order == 'total_views' %}active{% endif %}">
+                {% if order == 'total_views' %}
+                <a style="color: red" href="{% url 'article:article_list' %}?order=total_views&search={{ search|default:''  }}">
+                    最热 </a>
+                {% else %}
+                <a href="{% url 'article:article_list' %}?order=total_views&search={{ search|default:''  }}">
+                    最热
+                </a>
+                {% endif %}
+            </li>
+        </ol>
+        <form class="ml-auto" action="{% url 'article:article_list' %}" method="get">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="搜索" name="search" required>
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">搜索</button>
+                </div>
+            </div>
+        </form>
+        <!-- 新增，搜索提示语 -->
+        {% if search %}
+        {% if articles %}
+        <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
+        <hr>
+        {% else %}
+        <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
+        <hr>
+        {% endif %}
+        {% endif %}
+    </nav>
+
+    {% for article in articles %}
+    <div class="text-center position-relative"
+         style="width: 100%; height: 200px; overflow: hidden; border-radius: 10px;margin-bottom: 20px;">
+        {% if article.title_image %}
+        <div class="position-absolute top-0 start-0 w-100 h-100"
+             style="background-image: url({{ article.title_image.url }}); background-size: cover; background-position: center; filter: blur(10px);">
+        </div>
+        {% else %}
+        <!-- 处理没有标题图像的情况 -->
+        <div class="position-absolute top-0 start-0 w-100 h-100"
+             style="background-color: #fff;">
+        </div>
+        {% endif %}
+        <div class="text-center position-relative"
+             style="width: 100%; height: 200px; overflow: hidden; border-radius: 10px;">
+            <!-- 日期和浏览量部分 -->
+            <div class="d-flex align-items-center">
+                <i class="far fa-calendar-plus"></i>&nbsp;{{ article.updated_date|date:'Y-m-d' }}&nbsp;&nbsp;
+                <a href="#">
+                    <i class="far fa-comment-dots"></i>&nbsp;<span>{{ article.total_views }}</span>&nbsp;&nbsp;
+                </a>
+            </div>
+            <!-- 文章内容部分 -->
+            <div class="d-flex align-items-center justify-content-center h-100 w-100 position-absolute top-0 start-0 bg-overlay">
+                <div class="text-center text-light">
+                    <h2 class="title mb-3">
+                        <a href="{% url 'article:article_detail' article.id %}"
+                           style="color: black; text-decoration: none;">
+                            {{ article.title }}
+                        </a>
+                    </h2>
+                    <div class="preview-text">
+                        <p class="text-dark">{{ article.content|slice:'100' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Pagination -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="pagination row justify-content-center">
+                    <span class="step-links">
+                        <!-- If not the first page, show the previous page button -->
+                        {% if articles.has_previous %}
+                            <a href="?page={{ articles.previous_page_number }}&order={{ order }}{% if search %}&search={{ search }}{% endif %}"
+                               class="btn btn-secondary">
+                                &laquo;
+                            </a>
+                        {% else %}
+                        <!-- If no previous page -->
+                            <a href="#" class="btn btn-secondary disabled">
+                                &laquo;
+                            </a>
+                        {% endif %}
+
+                        <!-- Current page -->
+                        <span class="current btn btn-danger btn-lg mx-2">
+                            {{ articles.number }}
+                        </span>
+
+                        <!-- If not the last page, show the next page button -->
+                        {% if articles.has_next %}
+                            <a href="?page={{ articles.next_page_number }}&order={{ order }}{% if search %}&search={{ search }}{% endif %}"
+                               class="btn btn-secondary">
+                                &raquo;
+                            </a>
+                        {% else %}
+                        <!-- If no next page -->
+                            <a href="#" class="btn btn-secondary disabled">
+                                &raquo;
+                            </a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+$(document).ready(function() {
+    $('.breadcrumb-item').click(function() {
+        $('.breadcrumb-item').removeClass('active');
+        $(this).addClass('active');
+    });
+});
+
+</script>
+{% endblock content %}
