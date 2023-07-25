@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q,F
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from comment.models import Comment
@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 import markdown
-
 
 # Create your views here.
 def article_list(request):
@@ -36,10 +35,14 @@ def article_list(request):
 
 
 def article_detail(request, id):
-    article = Article.objects.get(id=id)
-    article.total_views += 1
-    article.save(update_fields=['total_views'])
+    article = get_object_or_404(Article, id=id)
+
+    # 使用F对象更新total_views，并避免并发问题
+    Article.objects.filter(id=id).update(total_views=F('total_views') + 1)
+
     comments = Comment.objects.filter(article=id)
+
+    # Markdown实例创建放在函数内的开始
     md = markdown.Markdown(
         extensions=[
             'markdown.extensions.extra',
@@ -47,8 +50,10 @@ def article_detail(request, id):
             'markdown.extensions.toc',
         ])
     article.content = md.convert(article.content)
+
     context = {'article': article, 'toc': md.toc, 'comments': comments}
     return render(request, 'article/detail.html', context)
+
 
 
 @login_required(login_url='/user/login/')
@@ -58,20 +63,16 @@ def article_create(request):
         article_post_form = ArticleForm(request.POST, request.FILES)
         print((article_post_form.is_valid()))
         if article_post_form.is_valid():
-
             # 已有代码
             new_article = article_post_form.save(commit=False)
-            print(new_article)
             if request.POST['column'] != 'none':
                 new_article.column = ArticleColumn.objects.get(id=request.POST['column'])
 
             new_article.author = User.objects.get(id=request.user.id)
-            print('wwwwwwwww')
             new_article.save()
             return redirect('article:article_list')
         else:
-            print('qqqqqqqqqqqq')
-            print(article_post_form.errors)
+
             return HttpResponse("表单内容有误，请重新填写。")
     else:
         article_post_form = ArticleForm()

@@ -23,11 +23,8 @@ SECRET_KEY = '5axvkwmzpsh@x&b0v-1!y)@czcp(obkjs--eg0%kasi1h9$ljz'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
-
 # Application definition
-
 INSTALLED_APPS = [
 
     'django.contrib.admin',

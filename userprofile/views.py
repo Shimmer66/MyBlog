@@ -4,11 +4,8 @@ from django.shortcuts import render, redirect
 from .forms import UserLoginForm, UserRegisterForm, ProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
-
 from .models import Profile
 import logging
-
-logger = logging.getLogger(__name__)
 
 
 # Create your views here.
@@ -52,14 +49,12 @@ def user_register(request):
             login(request, new_user)
             return redirect('article:article_list')
         else:
-            logger.error('注册信息填写有误，请重新输入！')
             return HttpResponse('注册信息填写有误，请重新输入！')
     elif request.method == 'GET':
         user_register_form = UserRegisterForm()
         context = {'form': user_register_form}
         return render(request, 'userprofile/register.html', context)
     else:
-        logger.error('请使用GET或POST请求数据！')
         return HttpResponse('请使用GET或POST请求数据！')
 
 
