@@ -1,8 +1,9 @@
+from MySQLdb._mysql import DatabaseError
 from django.db.models import Q,F
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from comment.models import Comment
-from .models import Article, ArticleColumn
+from .models import Article, ArticleColumn,Movie
 from .forms import ArticleForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -117,7 +118,6 @@ def article_update(request, id):
             article.column = ArticleColumn.objects.get(id=request.POST.get('column'))
         else:
             article.column = None
-
         if article_post_form.is_valid():
             # 获取经过验证的数据
             cleaned_data = article_post_form.cleaned_data
@@ -132,10 +132,8 @@ def article_update(request, id):
         # 如果数据不合法，返回错误信息
         else:
             return HttpResponse("表单内容有误，请重新填写。")
-
     # 如果用户 GET 请求获取数据
     else:
-
         # 创建表单类实例
         article_post_form = ArticleForm()
         # 文章栏目
@@ -149,4 +147,32 @@ def article_update(request, id):
 
         # 将响应返回到模板中
         return render(request, 'article/update.html', context)
+
+
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render, get_object_or_404
+
+def movie_list(request):
+    try:
+        movie_list = Movie.objects.all()
+    except DatabaseError:
+        # 处理数据库连接出错的情况，可以显示错误信息或重定向到错误页面
+        movie_list = []
+
+    paginator = Paginator(movie_list, 10)
+    page = request.GET.get('page', 1)
+
+    try:
+        movies = paginator.get_page(page)
+    except EmptyPage:
+        # 处理超过最大页数的情况，可以显示错误信息或重定向到最后一页
+        movies = paginator.get_page(paginator.num_pages)
+    except PageNotAnInteger:
+        # 处理无效页码的情况，可以显示错误信息或重定向到第一页
+        movies = paginator.get_page(1)
+
+    context = {'movies': movies}
+    return render(request, 'article/movie.html', context)
+
 

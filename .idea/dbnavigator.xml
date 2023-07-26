@@ -16,7 +16,7 @@
       <console name="Connection" type="STANDARD" schema="" session="Main"><![CDATA[select * from Article]]></console>
     </connection>
     <connection id="082bef07-3cf9-4f82-9af3-3172891f1936">
-      <console name="mysql" type="STANDARD" schema="Blog" session="Main"><![CDATA[select * from auth_user]]></console>
+      <console name="mysql" type="STANDARD" schema="Blog" session="Main"><![CDATA[select * from douban_movie]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">

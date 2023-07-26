@@ -53,27 +53,27 @@
     </nav>
 
 
-{% for article in articles %}
-<div class="card mb-3">
-    <a href="{% url 'article:article_detail' article.id %}" style="color: black; text-decoration: none;">
-        <div class="card-body">
-            <!-- 日期和浏览量部分 -->
-            <div class="d-flex align-items-center">
-                <i class="fa-solid fa-calendar-days"></i>&nbsp;
-                {{ article.updated_date|date:'Y-m-d' }}&nbsp;&nbsp;
-                <i class="fa-solid fa-fire"></i>&nbsp;<span>{{ article.total_views }}</span>&nbsp;&nbsp;
+    {% for article in articles %}
+    <div class="card mb-3">
+        <a href="{% url 'article:article_detail' article.id %}" style="color: black; text-decoration: none;">
+            <div class="card-body">
+                <!-- 日期和浏览量部分 -->
+                <div class="d-flex align-items-center">
+                    <i class="fa-solid fa-calendar-days"></i>&nbsp;
+                    {{ article.updated_date|date:'Y-m-d' }}&nbsp;&nbsp;
+                    <i class="fa-solid fa-fire"></i>&nbsp;<span>{{ article.total_views }}</span>&nbsp;&nbsp;
+                </div>
+                <!-- 文章内容部分 -->
+                <h2 class="card-title mt-3">
+                    {{ article.title }}
+                </h2>
+                <div class="card-text text-truncate">
+                    {{ article.content|slice:'100' }}
+                </div>
             </div>
-            <!-- 文章内容部分 -->
-            <h2 class="card-title mt-3">
-                {{ article.title }}
-            </h2>
-            <div class="card-text text-truncate">
-                {{ article.content|slice:'100' }}
-            </div>
-        </div>
-    </a>
-</div>
-{% endfor %}
+        </a>
+    </div>
+    {% endfor %}
 
 
     <!-- Pagination -->
@@ -118,7 +118,6 @@
     </div>
 </div>
 </body>
-
 <script>
 $(document).ready(function() {
     $('.breadcrumb-item').click(function() {
@@ -126,15 +125,6 @@ $(document).ready(function() {
         $(this).addClass('active');
     });
 });
-
-
-
-
-
-
-
-
-
 
 </script>
 {% endblock content %}

@@ -13,10 +13,7 @@ def user_login(request):
     if request.method == 'POST':
         user_login_form = UserLoginForm(data=request.POST)
         if user_login_form.is_valid():
-            data = user_login_form
-
             user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
-            # print(user)
             if user:
                 login(request, user)
                 return redirect('article:article_list')
@@ -56,8 +53,6 @@ def user_register(request):
         return render(request, 'userprofile/register.html', context)
     else:
         return HttpResponse('请使用GET或POST请求数据！')
-
-
 
 @login_required(login_url='/user/login/')
 def user_delete(request, id):

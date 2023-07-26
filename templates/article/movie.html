@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+<!-- 写入 base.html 中定义的 title -->
+{% block title %}
+首页
+{% endblock title %}
+<!-- 写入 base.html 中定义的 content -->
+{% block content %}
+<body style="background-color: #eee;">
+<div class="container bg-" style="padding-top: 70px">
+
+    <div class="row">
+        {% for movie in movies %}
+        <div class="col-md-2 mb-4">
+            <div class="card movie-card">
+                <img src="{{ movie.poster }}" class="card-img-top" style="width: 100%;     height:200px;    max-height: 250px; " alt="movie_poster">
+                <div class="card-body">
+                 <h5 class="card-title text-center mt-3 text-truncate" style="color: black;">
+                  <a style="color: black;" href="{{ movie.url }}">      {{ movie.title }}  </a>
+                    </h5>
+                    <div class="card-text text-center text-truncate">
+                        {{ movie.director }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if forloop.counter|divisibleby:5 or forloop.last %}
+    </div>
+    <div class="row">
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="pagination row justify-content-center">
+                    <span class="step-links">
+                        <!-- If not the first page, show the previous page button -->
+                        {% if movies.has_previous %}
+                            <a href="?page={{ movies.previous_page_number }}"
+                               class="btn btn-secondary">
+                                &laquo;
+                            </a>
+                        {% else %}
+                        <!-- If no previous page -->
+                            <a href="#" class="btn btn-secondary disabled">
+                                &laquo;
+                            </a>
+                        {% endif %}
+                        <!-- Current page -->
+                        <span class="current btn btn-danger btn-lg mx-2">
+                            {{ movies.number }}
+                        </span>
+
+                        <!-- If not the last page, show the next page button -->
+                        {% if movies.has_next %}
+                            <a href="?page={{ movies.next_page_number }}"
+                               class="btn btn-secondary">
+                                &raquo;
+                            </a>
+                        {% else %}
+                        <!-- If no next page -->
+                            <a href="#" class="btn btn-secondary disabled">
+                                &raquo;
+                            </a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+</body>

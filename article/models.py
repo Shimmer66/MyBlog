@@ -65,3 +65,13 @@ class Article(models.Model):
             resized_image = image.resize((new_x, new_y), Image.ANTIALIAS)
             resized_image.save(self.title_image.path)
         return article
+
+class Movie(models.Model):
+    title = models.CharField(max_length=100)
+    score = models.FloatField(default=0.0, null=True)
+    director = models.CharField(max_length=100)
+    actors = models.CharField(max_length=200)
+    poster=models.CharField(max_length=200)
+    url=models.CharField(max_length=200)
+    class Meta:
+        db_table = 'douban_movie'
